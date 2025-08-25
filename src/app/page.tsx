@@ -36,12 +36,17 @@ import {
   Cross,
   Ambulance,
   ChevronDown,
+  SearchSlash,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 
 interface BiodataForm {
   nama: string;
   nis: string;
+  umur: string; // disimpan sebagai string untuk kemudahan input
+  jenisKelamin: string;
+  asalSekolah: string;
   domisili: string;
 }
 
@@ -170,6 +175,9 @@ export default function TraficarePage() {
   const [biodata, setBiodata] = useState<BiodataForm>({
     nama: "",
     nis: "",
+    umur: "",
+    jenisKelamin: "",
+    asalSekolah: "",
     domisili: "",
   });
   const [isFormComplete, setIsFormComplete] = useState(false);
@@ -193,7 +201,14 @@ export default function TraficarePage() {
 
   const handleBiodataSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (biodata.nama && biodata.nis && biodata.domisili) {
+    if (
+      biodata.nama &&
+      biodata.nis &&
+      biodata.umur &&
+      biodata.jenisKelamin &&
+      biodata.asalSekolah &&
+      biodata.domisili
+    ) {
       setIsFormComplete(true);
       setTimeout(() => {
         guideRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -217,13 +232,10 @@ export default function TraficarePage() {
     <div className="min-h-screen bg-soft-gradient">
       {/* Navigation Bar */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-200/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-0">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-red-800 to-emerald-600 rounded-lg flex items-center justify-center">
-                <Cross className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold gradient-text-primary">Traficare</span>
+              <span className="text-xl font-bold gradient-text-primary font-serif">Traficare</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <button onClick={scrollToAbout} className="text-gray-600 hover:text-red-800 transition-colors font-medium">
@@ -281,9 +293,6 @@ export default function TraficarePage() {
             {/* Left Column - Enhanced Content */}
             <div className="space-y-8 slide-in-left">
               <div className="inline-flex items-center gap-3 glass-card text-red-800 px-6 py-3 rounded-full text-sm font-semibold shadow-soft ">
-                <div className="w-6 h-6 bg-gradient-to-br from-red-800 to-emerald-600 rounded-full flex items-center justify-center ">
-                  <Cross className="w-3 h-3 text-white" />
-                </div>
                 Platform Edukasi P3K untuk Siswa SMA
               </div>
 
@@ -291,13 +300,13 @@ export default function TraficarePage() {
                 <h1 className="font-serif text-6xl md:text-[5.4rem] font-bold gradient-text-primary leading-tight hero-title">
                   Traficare
                 </h1>
-                <div className="w-24 h-1 bg-gradient-to-r from-red-800 to-emerald-600 rounded-full"></div>
+                <div className="w-24 h-1 bg-emerald-600 rounded-full"></div>
               </div>
 
               <div className="space-y-6">
                 <h2 className="text-3xl text-gray-800 font-bold">
                   Empower Yourself with{" "}
-                  <span className="gradient-text-medical">First Aid Skills!</span>
+                  <span className="text-red-800">First Aid Skills!</span>
                 </h2>
                 <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl">
                   Pelajari teknik pertolongan pertama yang dapat menyelamatkan nyawa dalam situasi darurat. 
@@ -389,15 +398,14 @@ export default function TraficarePage() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20 fade-in-up">
             <div className="inline-flex items-center gap-3 glass-card text-red-800 px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-soft">
-              <Target className="w-4 h-4" />
+              <SearchSlash className="w-4 h-4" />
               Tentang Traficare
-              <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
             </div>
             <h2 className="font-serif text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Mengapa Memilih{" "}
               <span className="text-red-800">Traficare?</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-red-800 to-emerald-600 rounded-full mx-auto mb-8"></div>
+            <div className="w-24 h-1 bg-emerald-600 rounded-full mx-auto mb-8"></div>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Kami berkomitmen untuk memberikan edukasi P3K terbaik yang dapat diakses kapan saja, 
               di mana saja, dengan metode pembelajaran yang interaktif dan mudah dipahami.
@@ -497,7 +505,7 @@ export default function TraficarePage() {
           </div>
 
           {/* Enhanced Emergency Contact Info */}
-          <Card className="border-0 shadow-medical bg-gradient-to-r from-red-50/50 via-white to-orange-50/50 p-8 rounded-3xl hover-lift">
+          {/* <Card className="border-0 shadow-medical bg-gradient-to-r from-red-50/50 via-white to-orange-50/50 p-8 rounded-3xl hover-lift">
             <div className="text-center">
               <div className="inline-flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center">
@@ -532,7 +540,7 @@ export default function TraficarePage() {
                 <strong>Selalu hubungi layanan darurat terbuka ketika berhadapan dengan situasi emergency yang memerlukan pertolongan profesional</strong>
               </p>
             </div>
-          </Card>
+          </Card> */}
         </div>
       </section>
 
@@ -550,14 +558,13 @@ export default function TraficarePage() {
 
         <div className="max-w-3xl mx-auto relative z-10">
           <div className="text-center mb-12 fade-in-up">
-            <div className="inline-flex items-center gap-3 glass-card text-red-800 px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-soft">
+            <div className="inline-flex items-center gap-3 glass-card text-emerald-600 px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-soft">
               <Users className="w-4 h-4" />
               Bergabung dengan Komunitas
-              <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse"></div>
             </div>
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-              Tell Us About{" "}
-              <span className="gradient-text-medical">Yourself</span>
+              Bergabung untuk Pelajari {" "}
+              <span className="text-red-800">Panduan</span>
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-red-800 to-emerald-600 rounded-full mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -571,10 +578,10 @@ export default function TraficarePage() {
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-100/30 to-gray-100/30 rounded-full translate-y-16 -translate-x-16"></div>
 
             <CardHeader className="text-center pb-6 relative z-10">
-              <div className="w-20 h-20 bg-gradient-to-r from-red-800 to-red-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-medical hover:scale-110 transition-transform duration-300">
-                <Users className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-r from-emerald-800 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-medical hover:scale-110 transition-transform duration-300">
+                <User className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-3xl font-bold gradient-text-primary mb-2">
+              <CardTitle className="text-3xl font-bold mb-2">
                 Biodata Siswa
               </CardTitle>
               <CardDescription className="text-gray-600 text-lg">
@@ -582,19 +589,19 @@ export default function TraficarePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="relative z-10 p-8">
-              <form onSubmit={handleBiodataSubmit} className="space-y-8">
+              <form onSubmit={handleBiodataSubmit} className="grid gap-8 md:grid-cols-2">
                 <div className="space-y-3">
                   <Label
                     htmlFor="nama"
                     className="text-sm font-semibold text-gray-700 flex items-center gap-2"
                   >
                     <div className="w-2 h-2 bg-red-800 rounded-full"></div>
-                    Nama Lengkap
+                    Nama
                   </Label>
                   <Input
                     id="nama"
                     type="text"
-                    placeholder="Masukkan nama lengkap Anda"
+                    placeholder="Masukkan nama Anda"
                     value={biodata.nama}
                     onChange={(e) => handleBiodataChange("nama", e.target.value)}
                     className="h-14 text-base border-2 border-gray-200 focus:border-red-800 transition-all duration-300 rounded-2xl px-4 glass-card"
@@ -608,14 +615,75 @@ export default function TraficarePage() {
                     className="text-sm font-semibold text-gray-700 flex items-center gap-2"
                   >
                     <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-                    NIS (Nomor Induk Siswa)
+                    NIS/NIM
                   </Label>
                   <Input
                     id="nis"
                     type="text"
-                    placeholder="Masukkan NIS Anda"
+                    placeholder="Masukkan NIS atau NIM"
                     value={biodata.nis}
                     onChange={(e) => handleBiodataChange("nis", e.target.value)}
+                    className="h-14 text-base border-2 border-gray-200 focus:border-emerald-600 transition-all duration-300 rounded-2xl px-4 glass-card"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label
+                    htmlFor="umur"
+                    className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                    Umur
+                  </Label>
+                  <Input
+                    id="umur"
+                    type="number"
+                    min="1"
+                    max="120"
+                    placeholder="Masukkan umur"
+                    value={biodata.umur}
+                    onChange={(e) => handleBiodataChange("umur", e.target.value)}
+                    className="h-14 text-base border-2 border-gray-200 focus:border-gray-500 transition-all duration-300 rounded-2xl px-4 glass-card"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label
+                    htmlFor="jenisKelamin"
+                    className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 bg-red-800 rounded-full"></div>
+                    Jenis Kelamin
+                  </Label>
+                  <select
+                    id="jenisKelamin"
+                    value={biodata.jenisKelamin}
+                    onChange={(e) => handleBiodataChange("jenisKelamin", e.target.value)}
+                    className="h-14 text-base border-2 border-gray-200 focus:border-red-800 transition-all duration-300 rounded-2xl px-4 glass-card bg-white w-full"
+                    required
+                  >
+                    <option value="" disabled>Pilih jenis kelamin</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <Label
+                    htmlFor="asalSekolah"
+                    className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
+                    Asal Sekolah
+                  </Label>
+                  <Input
+                    id="asalSekolah"
+                    type="text"
+                    placeholder="Nama sekolah atau universitas"
+                    value={biodata.asalSekolah}
+                    onChange={(e) => handleBiodataChange("asalSekolah", e.target.value)}
                     className="h-14 text-base border-2 border-gray-200 focus:border-emerald-600 transition-all duration-300 rounded-2xl px-4 glass-card"
                     required
                   />
@@ -640,19 +708,19 @@ export default function TraficarePage() {
                   />
                 </div>
 
-                <div className="pt-4">
+                <div className="md:col-span-2 pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-14 bg-gradient-to-r from-red-800 to-emerald-600 hover:from-red-900 hover:to-emerald-700 text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-medical hover:shadow-lg hover-lift shimmer-effect"
+                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-medical hover:shadow-lg hover-lift shimmer-effect"
                   >
                     <TrendingUp className="w-5 h-5 mr-3" />
-                    Join the Community
+                    Mulai Pelajari Panduan
                     <ChevronRight className="w-5 h-5 ml-3" />
                   </Button>
                 </div>
 
                 {/* Progress Indicator */}
-                <div className="flex justify-center items-center gap-2 pt-4">
+                <div className="md:col-span-2 flex justify-center items-center gap-2 pt-2">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <CheckCircle className="w-4 h-4 text-blue-500" />
                     <span>Data Aman</span>
