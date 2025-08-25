@@ -1,26 +1,568 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fefefe;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  
+  /* Simplified color palette - RED-800 & EMERALD-600 focused */
+  --primary: #991b1b; /* red-800 */
+  --primary-foreground: #ffffff;
+  --secondary: #059669; /* emerald-600 */
+  --secondary-foreground: #ffffff;
+  --muted: #f9fafb; /* gray-50 */
+  --muted-foreground: #6b7280; /* gray-500 */
+  
+  /* Supporting neutral colors */
+  --accent: #374151; /* gray-700 */
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626; /* red-600 for alerts */
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb; /* gray-200 */
+  --input: #f3f4f6; /* gray-100 */
+  --ring: #991b1b; /* red-800 */
+  
+  --radius: 0.75rem;
+  --font-dm-sans: "DM Sans", sans-serif;
+  --font-dm-serif: "DM Serif Display", serif;
+  
+  /* Simplified medical theme colors */
+  --medical-red: #991b1b; /* red-800 */
+  --medical-emerald: #059669; /* emerald-600 */
+  --medical-red-light: #fef2f2; /* red-50 */
+  --medical-emerald-light: #ecfdf5; /* emerald-50 */
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 25);
+  --chart-2: oklch(0.696 0.17 160);
+  --chart-3: oklch(0.769 0.188 200);
+  --chart-4: oklch(0.627 0.265 45);
+  --chart-5: oklch(0.645 0.246 300);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 25);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-dm-serif);
+  /* Added sage color for the new palette */
+  --color-sage-50: #f6f7f6;
+  --color-sage-100: #e9ebe9;
+  --color-sage-200: #d3d7d3;
+  --color-sage-300: #b4bbb4;
+  --color-sage-400: #8d978d;
+  --color-sage-500: #6f7a6f;
+  --color-sage-600: #5a645a;
+  --color-sage-700: #4a524a;
+  --color-sage-800: #3d433d;
+  --color-sage-900: #343834;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Added smooth scrolling and enhanced animations */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced custom animations for modern medical theme */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Modern animation classes */
+.slide-in-right {
+  animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.float-animation {
+  animation: float 4s ease-in-out infinite;
+}
+
+.gentle-pulse {
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+.gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+.breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px var(--medical-blue);
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover{
+  cursor: pointer;
+}
+
+.shimmer-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* Simplified background patterns using only red-800 and emerald-600 */
+.bg-medical-pattern {
+  background-image: radial-gradient(circle at 25% 25%, rgba(153, 27, 27, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(5, 150, 105, 0.06) 0%, transparent 50%);
+}
+
+.bg-soft-gradient {
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f9fafb 100%);
+}
+
+.bg-medical-hero {
+  background: linear-gradient(135deg, 
+    rgba(249, 250, 251, 0.9) 0%, 
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(249, 250, 251, 0.9) 100%
+  );
+}
+
+/* Glass effects - simplified */
+.glass-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(229, 231, 235, 0.3);
+}
+
+/* Text gradients - only red-800 and emerald-600 */
+.gradient-text-primary {
+  background: linear-gradient(135deg, #991b1b, #374151);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-medical {
+  background: linear-gradient(135deg, #991b1b, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shadows using main colors */
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.08);
+}
+
+.shadow-medical {
+  box-shadow: 0 10px 40px rgba(153, 27, 27, 0.12);
+}
+
+.shadow-emerald {
+  box-shadow: 0 10px 40px rgba(5, 150, 105, 0.12);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+  }
+  
+  .section-padding {
+    padding: 4rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.75rem;
+  }
+}
+
+/* Enhanced prose styling for article content with new colors */
+.prose {
+  max-width: none;
+}
+
+.prose h3 {
+  @apply text-2xl font-bold text-stone-800 mb-4 mt-6;
+}
+
+.prose ol {
+  @apply space-y-3 mb-6;
+}
+
+.prose ol li {
+  @apply text-stone-700 leading-relaxed;
+}
+
+.prose ol li strong {
+  @apply text-red-700 font-semibold;
+}
+
+.prose p {
+  @apply text-stone-600 leading-relaxed mb-4;
+}
+
+.prose p strong {
+  @apply text-stone-800 font-semibold;
+}
+
+/* Updated custom scrollbar styling with red-800 and emerald-600 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #991b1b, #059669);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #7f1d1d, #047857);
+}
+
+/* Enhanced button hover effects */
+.btn-gradient-hover {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient-hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-gradient-hover:hover::before {
+  left: 100%;
+}
+
+/* Card hover effects */
+.card-hover-effect {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Updated background pattern utilities with new colors */
+.bg-medical-pattern {
+  background-image: radial-gradient(circle at 25% 25%, rgba(185, 28, 28, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+}
+
+.bg-dots-pattern {
+  background-image: radial-gradient(circle, rgba(120, 113, 108, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Added medical-themed background patterns */
+.bg-cross-pattern {
+  background-image: linear-gradient(90deg, rgba(185, 28, 28, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(185, 28, 28, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.bg-heartbeat-pattern {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 45%,
+    rgba(185, 28, 28, 0.1) 50%,
+    transparent 55%,
+    transparent 100%
+  );
+  background-size: 40px 2px;
+  background-repeat: repeat-x;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+    line-height: 1.1;
+  }
+
+  .section-padding {
+    padding: 3rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Added utility classes for the new color scheme */
+.text-sage-600 {
+  color: var(--color-sage-600);
+}
+
+.text-sage-700 {
+  color: var(--color-sage-700);
+}
+
+.bg-sage-50 {
+  background-color: var(--color-sage-50);
+}
+
+.bg-sage-100 {
+  background-color: var(--color-sage-100);
+}
+
+.border-sage-200 {
+  border-color: var(--color-sage-200);
+}
+
+/* Enhanced medical icon animations */
+.medical-icon-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.medical-icon-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient text utilities for the new palette */
+.gradient-text-medical {
+  background: linear-gradient(135deg, #b91c1c, #78716c, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg-medical {
+  background: linear-gradient(135deg, #fef2f2, #ffffff, #f0fdf4);
+}
+
+.gradient-bg-medical-dark {
+  background: linear-gradient(135deg, #7f1d1d, #44403c, #14532d);
 }
