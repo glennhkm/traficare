@@ -384,7 +384,7 @@ export default function TraficarePage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
-                  onClick={scrollToAbout}
+                  onClick={scrollToBiodata}
                   size="lg"
                   className="bg-gradient-to-r from-red-800 to-red-700 hover:from-red-900 hover:to-red-800 text-white px-8 py-4 text-lg font-semibold rounded-2xl shadow-medical hover:shadow-lg transition-all duration-300 hover-lift shimmer-effect"
                 >
