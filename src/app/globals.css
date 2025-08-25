@@ -414,7 +414,7 @@ button:hover{
 }
 
 /* Updated custom scrollbar styling with red-800 and emerald-600 */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 8px;
 }
 
@@ -429,7 +429,7 @@ button:hover{
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #7f1d1d, #047857);
-}
+} */
 
 /* Enhanced button hover effects */
 .btn-gradient-hover {
