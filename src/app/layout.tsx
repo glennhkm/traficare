@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { DM_Sans, DM_Serif_Display, Playfair_Display, Source_Sans_3 as Source_Sans_Pro } from "next/font/google"
 import "./globals.css"
+import AnalyticsTracker from "@/components/AnalyticsTracker"
 
 // const playfair = Playfair_Display({
 //   subsets: ["latin"],
@@ -41,7 +42,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${sourceSans.variable} ${dmSans.variable} antialiased`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <AnalyticsTracker />
+        {children}
+      </body>
     </html>
   )
 }
