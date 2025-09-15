@@ -52,14 +52,14 @@ const guideCategories = {
   evakuasi: {
     title: "Evakuasi Korban",
     description: "Teknik memindahkan korban dengan aman",
-    image: '/images/ambulance.PNG',
+    image: "/images/ambulance.PNG",
     color: "bg-emerald-600",
     gradient: "from-emerald-500/15 to-emerald-600/10",
   },
   luka: {
     title: "Luka & Pendarahan",
     description: "Penanganan luka dan menghentikan pendarahan",
-    image: '/images/lukaPendarahan.png',
+    image: "/images/lukaPendarahan.png",
     // primary blue as main accent
     color: "bg-[#0066A5]",
     gradient: "from-[#0066A5]/15 to-[#00588E]/10",
@@ -67,14 +67,14 @@ const guideCategories = {
   fraktur: {
     title: "Fraktur",
     description: "Penanganan patah tulang dan cedera tulang",
-    image: '/images/fraktur.png',
+    image: "/images/fraktur.png",
     color: "bg-gray-700",
     gradient: "from-gray-600/10 to-gray-700/5",
   },
   sinkop: {
     title: "Sinkop",
     description: "Penanganan pingsan dan kehilangan kesadaran",
-    image: '/images/sinkop.png',
+    image: "/images/sinkop.png",
     color: "bg-emerald-600",
     gradient: "from-emerald-500/15 to-emerald-600/10",
   },
@@ -114,20 +114,28 @@ export default function TraficarePage() {
 
   const handleBiodataSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!biodata.nama || !biodata.nis || !biodata.umur || !biodata.jenisKelamin || !biodata.asalSekolah || !biodata.domisili) {
+    if (
+      !biodata.nama ||
+      !biodata.nis ||
+      !biodata.umur ||
+      !biodata.jenisKelamin ||
+      !biodata.asalSekolah ||
+      !biodata.domisili
+    ) {
       return;
     }
     const umur = Number(biodata.umur);
-    const { error } = await supabase
-      .from("students")
-      .upsert({
+    const { error } = await supabase.from("students").upsert(
+      {
         nis: biodata.nis.trim(),
         nama: biodata.nama.trim(),
         umur,
         jenis_kelamin: biodata.jenisKelamin,
         asal_sekolah: biodata.asalSekolah.trim(),
         domisili: biodata.domisili.trim(),
-      }, { onConflict: "nis" });
+      },
+      { onConflict: "nis" }
+    );
     if (!error) {
       localStorage.setItem("traficare_nis", biodata.nis.trim());
       setStudentNis(biodata.nis.trim());
@@ -177,7 +185,9 @@ export default function TraficarePage() {
       setLoadingGuides(true);
       const { data, error } = await supabase
         .from("guides")
-        .select("id, category, title, description, article_html, youtube_url, youtube_embed_url, published")
+        .select(
+          "id, category, title, description, article_html, youtube_url, youtube_embed_url, published"
+        )
         .eq("published", true)
         .order("created_at", { ascending: true });
       if (!error && data) {
@@ -385,7 +395,7 @@ export default function TraficarePage() {
                     className="object-contain rounded-3xl scale-110"
                   />
                 </div>
-              </div>              
+              </div>
             </div>
           </div>
         </div>
@@ -404,7 +414,7 @@ export default function TraficarePage() {
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20 fade-in-up">
+          <div className="text-center mb-16 fade-in-up">
             <div className="inline-flex items-center gap-3 glass-card text-[#0066A5] px-6 py-3 rounded-full text-sm font-semibold mb-6 shadow-soft">
               <SearchSlash className="w-4 h-4" />
               Tentang Traficare
@@ -420,63 +430,82 @@ export default function TraficarePage() {
             </p>
           </div>
 
-          {/* Enhanced Mission & Vision */}
-          <div className="grid lg:grid-cols-2 gap-12 mb-20">
-            <Card className="border-0 shadow-medical bg-gradient-to-br from-[#eef6fb] to-white p-8 rounded-3xl hover-lift slide-in-left">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-[#0066A5] to-[#00588E] rounded-2xl flex items-center justify-center shadow-lg">
-                  <Target className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-3xl font-bold text-gray-900">
-                    Misi Kami
-                  </h3>
-                  <div className="w-12 h-0.5 bg-[#0066A5] rounded-full mt-2"></div>
-                </div>
+          {/* Tim Pengembang & Visi Misi */}
+          <div className="grid lg:grid-cols-2 gap-16 mb-20">
+            {/* Foto Tim Pengembang */}
+            <div className="w-full slide-in-left group overflow-hidden rounded-3xl">
+              <div className="w-full relative h-96 lg:h-full min-h-[500px]">
+              <Image
+                src={"/images/pengembang.png"}
+                alt="Tim Pengembang Traficare"
+                fill
+                className="object-cover group-hover:scale-110 shadow-medical hover:shadow-lg transition-all duration-300 hover-lift scale-in"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 shadow-lg shadow-black/40 via-transparent to-transparent"></div>
+              <div className="absolute bottom-8 left-8 text-white">
+                <h3 className="text-4xl font-serif font-bold mb-2 group-hover:text-5xl duration-200">Tim Pengembang</h3>
               </div>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                Memberikan akses mudah dan praktis kepada siswa SMA untuk
-                mempelajari teknik pertolongan pertama yang dapat menyelamatkan
-                nyawa. Kami percaya bahwa setiap siswa berhak mendapatkan
-                pengetahuan yang dapat membuat perbedaan dalam situasi darurat.
-              </p>
-              <div className="mt-6 flex items-center gap-2 text-[#0066A5]">
-                <CheckCircle className="w-5 h-5" />
-                <span className="text-sm font-medium">Akses Praktis</span>
               </div>
-            </Card>
+            </div>
 
-            <Card className="border-0 shadow-medical bg-gradient-to-br from-emerald-50/30 to-white p-8 rounded-3xl hover-lift slide-in-right">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Globe className="w-8 h-8 text-white" />
+            {/* Visi & Misi Cards */}
+            <div className="space-y-8 slide-in-right">
+              <Card className="border-0 shadow-medical bg-gradient-to-br from-[#eef6fb] to-white p-8 rounded-3xl hover-lift">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#0066A5] to-[#00588E] rounded-2xl flex items-center justify-center shadow-lg">
+                    <Target className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-3xl font-bold text-gray-900">
+                      Misi Kami
+                    </h3>
+                    <div className="w-12 h-0.5 bg-[#0066A5] rounded-full mt-2"></div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-serif text-3xl font-bold text-gray-900">
-                    Visi Kami
-                  </h3>
-                  <div className="w-12 h-0.5 bg-emerald-600 rounded-full mt-2"></div>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  Memberikan akses mudah dan praktis kepada siswa SMA untuk
+                  mempelajari teknik pertolongan pertama yang dapat menyelamatkan
+                  nyawa. Kami percaya bahwa setiap siswa berhak mendapatkan
+                  pengetahuan yang dapat membuat perbedaan dalam situasi darurat.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-[#0066A5]">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="text-sm font-medium">Akses Praktis & Mudah</span>
                 </div>
-              </div>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                Menjadi platform edukasi Pertolongan Pertama Pada Kecelakaan
-                terdepan di Indonesia yang menciptakan generasi muda yang siap
-                dan mampu memberikan pertolongan pertama dalam situasi darurat,
-                sehingga dapat mengurangi risiko kematian dan cedera yang dapat
-                dicegah.
-              </p>
-              <div className="mt-6 flex items-center gap-2 text-emerald-600">
-                <TrendingUp className="w-5 h-5" />
-                <span className="text-sm font-medium">
-                  Impact Berkelanjutan
-                </span>
-              </div>
-            </Card>
+              </Card>
+
+              <Card className="border-0 shadow-medical bg-gradient-to-br from-emerald-50/30 to-white p-8 rounded-3xl hover-lift">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Globe className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-3xl font-bold text-gray-900">
+                      Visi Kami
+                    </h3>
+                    <div className="w-12 h-0.5 bg-emerald-600 rounded-full mt-2"></div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  Menjadi platform edukasi Pertolongan Pertama Pada Kecelakaan
+                  terdepan di Indonesia yang menciptakan generasi muda yang siap
+                  dan mampu memberikan pertolongan pertama dalam situasi darurat,
+                  sehingga dapat mengurangi risiko kematian dan cedera yang dapat
+                  dicegah.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-emerald-600">
+                  <TrendingUp className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    Impact Berkelanjutan
+                  </span>
+                </div>
+              </Card>
+            </div>
           </div>
 
           {/* Enhanced Features Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            <div className="text-center group hover-lift scale-in">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center group scale-in bg-white/50 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 hover-lift shadow-medical">
               <div className="w-20 h-20 bg-gradient-to-r from-[#0066A5] to-[#00588E] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-medical">
                 <Book className="w-10 h-10 text-white" />
               </div>
@@ -490,7 +519,7 @@ export default function TraficarePage() {
             </div>
 
             <div
-              className="text-center group hover-lift scale-in"
+              className="text-center group scale-in bg-white/50 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 hover-lift shadow-medical"
               style={{ animationDelay: "0.2s" }}
             >
               <div className="w-20 h-20 bg-gradient-to-r from-[#0066A5] to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-medical">
@@ -506,7 +535,7 @@ export default function TraficarePage() {
             </div>
 
             <div
-              className="text-center group hover-lift scale-in"
+              className="text-center group scale-in bg-white/50 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 hover-lift shadow-medical"
               style={{ animationDelay: "0.4s" }}
             >
               <div className="w-20 h-20 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-medical">
@@ -522,7 +551,7 @@ export default function TraficarePage() {
             </div>
 
             <div
-              className="text-center group hover-lift scale-in"
+              className="text-center group scale-in bg-white/50 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/80 transition-all duration-300 hover-lift shadow-medical"
               style={{ animationDelay: "0.6s" }}
             >
               <div className="w-20 h-20 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-medical">
@@ -536,7 +565,7 @@ export default function TraficarePage() {
                 mengikuti protokol terbaru.
               </p>
             </div>
-          </div>          
+          </div>
         </div>
       </section>
 
@@ -751,7 +780,9 @@ export default function TraficarePage() {
               </div>
               <h2 className="font-serif text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Choose Your First Aid{" "}
-                <span className="bg-clip-text bg-gradient-to-r from-[#004a79] to-[#0066A5] text-transparent">Journey</span>
+                <span className="bg-clip-text bg-gradient-to-r from-[#004a79] to-[#0066A5] text-transparent">
+                  Journey
+                </span>
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-[#0066A5] to-emerald-600 rounded-full mx-auto mb-8"></div>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
@@ -767,7 +798,9 @@ export default function TraficarePage() {
                 return (
                   <Card
                     key={key}
-                    onClick={() => available && handleGuideSelect(key as GuideCategory)}
+                    onClick={() =>
+                      available && handleGuideSelect(key as GuideCategory)
+                    }
                     className={`cursor-pointer border-0 shadow-medical hover:shadow-lg transition-all duration-300 hover-lift scale-in relative overflow-hidden group ${
                       selectedGuide === key
                         ? "ring-2 ring-[#0066A5] ring-offset-2"
@@ -796,7 +829,9 @@ export default function TraficarePage() {
                         {category.description}
                       </p>
                       {!available && (
-                        <div className="text-xs text-gray-500">Belum tersedia</div>
+                        <div className="text-xs text-gray-500">
+                          Belum tersedia
+                        </div>
                       )}
                       <div className="flex items-center justify-center gap-2 text-[#0066A5] group-hover:text-[#004a79] font-medium">
                         <span>Mulai Belajar</span>
@@ -879,8 +914,12 @@ export default function TraficarePage() {
                   <TabsContent value="video" className="p-8 m-0">
                     <div className="space-y-8">
                       {(() => {
-                        const g = guides.find((x) => x.category === selectedGuide);
-                        const embed = g?.youtube_embed_url || toYouTubeEmbed(g?.youtube_url || undefined);
+                        const g = guides.find(
+                          (x) => x.category === selectedGuide
+                        );
+                        const embed =
+                          g?.youtube_embed_url ||
+                          toYouTubeEmbed(g?.youtube_url || undefined);
                         return embed ? (
                           <div className="aspect-video rounded-xl overflow-hidden shadow-2xl">
                             <iframe
@@ -897,7 +936,9 @@ export default function TraficarePage() {
                               <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
                                 <Play className="w-12 h-12 text-white ml-1" />
                               </div>
-                              <p className="text-xl font-semibold mb-2">Video belum tersedia</p>
+                              <p className="text-xl font-semibold mb-2">
+                                Video belum tersedia
+                              </p>
                             </div>
                           </div>
                         );
@@ -908,10 +949,12 @@ export default function TraficarePage() {
                           <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
                             <Play className="w-4 h-4 text-white ml-0.5" />
                           </div>
-                          {guides.find((x) => x.category === selectedGuide)?.title || "Video Panduan"}
+                          {guides.find((x) => x.category === selectedGuide)
+                            ?.title || "Video Panduan"}
                         </h3>
                         <p className="text-stone-700 leading-relaxed text-lg">
-                          {guides.find((x) => x.category === selectedGuide)?.description || "Demonstrasi praktis."}
+                          {guides.find((x) => x.category === selectedGuide)
+                            ?.description || "Demonstrasi praktis."}
                         </p>
                       </div>
                     </div>
@@ -924,18 +967,23 @@ export default function TraficarePage() {
                           <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
                             <FileText className="w-4 h-4 text-white" />
                           </div>
-                          {guides.find((x) => x.category === selectedGuide)?.title || "Artikel Panduan"}
+                          {guides.find((x) => x.category === selectedGuide)
+                            ?.title || "Artikel Panduan"}
                         </h3>
 
                         {(() => {
-                          const html = guides.find((x) => x.category === selectedGuide)?.article_html;
+                          const html = guides.find(
+                            (x) => x.category === selectedGuide
+                          )?.article_html;
                           return html ? (
                             <div
                               className="rich-content prose prose-lg max-w-none text-stone-700 leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: html }}
                             />
                           ) : (
-                            <p className="text-stone-700 leading-relaxed text-lg">Artikel belum tersedia.</p>
+                            <p className="text-stone-700 leading-relaxed text-lg">
+                              Artikel belum tersedia.
+                            </p>
                           );
                         })()}
                       </div>
@@ -1017,8 +1065,8 @@ export default function TraficarePage() {
 
           <div className="text-center text-sm text-gray-400">
             <p>
-              © <span>{year}</span> Traficare • Dibuat dengan dedikasi
-              untuk keselamatan bersama
+              © <span>{year}</span> Traficare • Dibuat dengan dedikasi untuk
+              keselamatan bersama
             </p>
           </div>
         </div>
