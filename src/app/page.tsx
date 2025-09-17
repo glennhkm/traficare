@@ -1136,7 +1136,7 @@ export default function TraficarePage() {
               Traficare
             </h3>
             <p className="mt-3 text-gray-300">
-              Platform edukasi Pertolongan Pertama pada Kecelakaan untuk remaja.
+              Platform edukasi Pertolongan Pertama pada Kecelakaan untuk Remaja.
               Bangun kesiapsiagaan dengan pengetahuan yang tepat.
             </p>
           </div>
