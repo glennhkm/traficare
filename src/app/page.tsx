@@ -99,10 +99,33 @@ export default function TraficarePage() {
   const biodataRef = useRef<HTMLDivElement>(null);
   const guideRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [year, setYear] = useState<number>();
+  // Year is rendered directly to avoid SSR/CSR mismatch
   const [guides, setGuides] = useState<GuideRow[]>([]);
   const [loadingGuides, setLoadingGuides] = useState(false);
   const [studentNis, setStudentNis] = useState<string | null>(null);
+  // Team slider state
+  const teamSlides = [
+    {
+      src: "/images/pengembang-1.png",
+      title: "Tim Pengembang",
+      members: [
+        "Ns. Jufrizal, S.Kep., M.Kep",
+        "Ns. Rahmalia Amni, M.Kep",
+        "Dr. Ns. Hilman Syarif, M.Kep., Sp.Kep. MB",
+      ],
+    },
+    {
+      src: "/images/pengembang-2.png",
+      title: "Tim Pengembang",
+      members: [
+        "Ns. Jufrizal, S.Kep., M.Kep",
+        "Ns. Rahmalia Amni, M.Kep",
+        "Dr. Ns. Hilman Syarif, M.Kep., Sp.Kep. MB",
+      ],
+    },
+  ];
+  const [teamIndex, setTeamIndex] = useState(0);
+  const [isTeamHover, setIsTeamHover] = useState(false);
 
   const scrollToAbout = () => {
     aboutRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,7 +191,6 @@ export default function TraficarePage() {
   };
 
   useEffect(() => {
-    setYear(new Date().getFullYear());
     const stored = localStorage.getItem("traficare_nis");
     if (stored) {
       setStudentNis(stored);
@@ -199,6 +221,16 @@ export default function TraficarePage() {
     };
     load();
   }, []);
+
+  // Autoplay team slider every 4s, pause on hover
+  useEffect(() => {
+    if (teamSlides.length <= 1) return; // no need to autoplay for single slide
+    if (isTeamHover) return;
+    const id = setInterval(() => {
+      setTeamIndex((prev) => (prev + 1) % teamSlides.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [isTeamHover, teamSlides.length]);
 
   return (
     <div className="min-h-screen bg-soft-gradient">
@@ -348,8 +380,8 @@ export default function TraficarePage() {
             {/* Left Column - Enhanced Content */}
             <div className="space-y-8 slide-in-left">
               <div className="inline-flex items-center gap-3 glass-card text-[#0066A5] px-6 py-3 rounded-full text-sm font-semibold shadow-soft ">
-                Platform Edukasi Pertolongan Pertama Pada Kecelakaan untuk Siswa
-                SMA
+                Platform Edukasi Pertolongan Pertama Pada Kecelakaan untuk
+                remaja
               </div>
 
               <div className="space-y-4">
@@ -367,8 +399,8 @@ export default function TraficarePage() {
                 <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
                   Pelajari teknik pertolongan pertama yang dapat menyelamatkan
                   nyawa dalam situasi darurat. Platform interaktif yang
-                  dirancang khusus untuk siswa SMA dengan pendekatan modern dan
-                  mudah dipahami.
+                  dirancang khusus untuk remaja dengan pendekatan
+                  modern dan mudah dipahami.
                 </p>
               </div>
 
@@ -432,48 +464,68 @@ export default function TraficarePage() {
 
           {/* Tim Pengembang & Visi Misi */}
           <div className="grid lg:grid-cols-2 gap-16 mb-20">
-            {/* Foto Tim Pengembang */}
-            <div className="w-full slide-in-left group overflow-hidden rounded-3xl">
+            {/* Foto Tim Pengembang - Slider */}
+            <div
+              className="w-full slide-in-left group overflow-hidden rounded-3xl"
+              onMouseEnter={() => setIsTeamHover(true)}
+              onMouseLeave={() => setIsTeamHover(false)}
+            >
               <div className="w-full relative h-96 lg:h-full min-h-[500px]">
-              <Image
-                src={"/images/pengembang.png"}
-                alt="Tim Pengembang Traficare"
-                fill
-                className="object-cover group-hover:scale-110 shadow-medical hover:shadow-lg transition-all duration-300 hover-lift scale-in"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 shadow-lg shadow-black/40 via-transparent to-transparent"></div>
-              <div className="absolute bottom-8 left-8 text-white">
-                <h3 className="text-4xl font-serif font-bold mb-2 group-hover:text-5xl duration-200">Tim Pengembang</h3>
-              </div>
+                {/* Slides Wrapper */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <div
+                    className="flex h-full transition-transform duration-700 ease-in-out"
+                    style={{
+                      width: `${teamSlides.length * 100}%`,
+                      transform: `translateX(-${teamIndex * (100 / teamSlides.length)}%)`,
+                    }}
+                  >
+                    {teamSlides.map((slide, i) => (
+                      <div
+                        key={i}
+                        className="relative h-full shrink-0 grow-0"
+                        style={{ width: `${100 / teamSlides.length}%` }}
+                      >
+                        <Image
+                          src={slide.src}
+                          alt={slide.title}
+                          fill
+                          className="object-cover group-hover:scale-110 shadow-medical hover:shadow-lg transition-all duration-300 hover-lift scale-in"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 shadow-lg shadow-black/40 via-transparent to-transparent z-10"></div>
+                        <div className="absolute bottom-12 left-8 text-white z-20">
+                          <h3 className="text-4xl font-serif font-bold mb-2 group-hover:text-5xl group-hover:mb-4 duration-200">
+                            {slide.title}
+                          </h3>
+                          {slide.members?.map((m, idx) => (
+                            <p key={idx} className="duration-200 text-base group-hover:text-lg">
+                              {m}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dot Indicators */}
+                <div className="absolute bottom-4 left-0 right-0 z-30 flex items-center justify-center gap-2">
+                  {teamSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      aria-label={`Slide ${i + 1}`}
+                      onClick={() => setTeamIndex(i)}
+                      className={`h-2.5 rounded-full transition-all duration-300 ${
+                        i === teamIndex ? "w-6 bg-white/60" : "w-2.5 bg-white/20 hover:bg-white/80"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Visi & Misi Cards */}
             <div className="space-y-8 slide-in-right">
-              <Card className="border-0 shadow-medical bg-gradient-to-br from-[#eef6fb] to-white p-8 rounded-3xl hover-lift">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-[#0066A5] to-[#00588E] rounded-2xl flex items-center justify-center shadow-lg">
-                    <Target className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-3xl font-bold text-gray-900">
-                      Misi Kami
-                    </h3>
-                    <div className="w-12 h-0.5 bg-[#0066A5] rounded-full mt-2"></div>
-                  </div>
-                </div>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Memberikan akses mudah dan praktis kepada siswa SMA untuk
-                  mempelajari teknik pertolongan pertama yang dapat menyelamatkan
-                  nyawa. Kami percaya bahwa setiap siswa berhak mendapatkan
-                  pengetahuan yang dapat membuat perbedaan dalam situasi darurat.
-                </p>
-                <div className="mt-6 flex items-center gap-2 text-[#0066A5]">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="text-sm font-medium">Akses Praktis & Mudah</span>
-                </div>
-              </Card>
-
               <Card className="border-0 shadow-medical bg-gradient-to-br from-emerald-50/30 to-white p-8 rounded-3xl hover-lift">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -489,14 +541,40 @@ export default function TraficarePage() {
                 <p className="text-gray-700 text-lg leading-relaxed">
                   Menjadi platform edukasi Pertolongan Pertama Pada Kecelakaan
                   terdepan di Indonesia yang menciptakan generasi muda yang siap
-                  dan mampu memberikan pertolongan pertama dalam situasi darurat,
-                  sehingga dapat mengurangi risiko kematian dan cedera yang dapat
-                  dicegah.
+                  dan mampu memberikan pertolongan pertama dalam situasi
+                  darurat, sehingga dapat mengurangi risiko kematian dan cedera
+                  yang dapat dicegah.
                 </p>
                 <div className="mt-6 flex items-center gap-2 text-emerald-600">
                   <TrendingUp className="w-5 h-5" />
                   <span className="text-sm font-medium">
                     Impact Berkelanjutan
+                  </span>
+                </div>
+              </Card>
+              <Card className="border-0 shadow-medical bg-gradient-to-br from-[#eef6fb] to-white p-8 rounded-3xl hover-lift">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#0066A5] to-[#00588E] rounded-2xl flex items-center justify-center shadow-lg">
+                    <Target className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-3xl font-bold text-gray-900">
+                      Misi Kami
+                    </h3>
+                    <div className="w-12 h-0.5 bg-[#0066A5] rounded-full mt-2"></div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  Memberikan akses mudah dan praktis kepada remaja
+                  untuk mempelajari teknik pertolongan pertama yang dapat
+                  menyelamatkan nyawa. Kami percaya bahwa setiap individu berhak
+                  mendapatkan pengetahuan yang dapat membuat perbedaan dalam
+                  situasi darurat.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-[#0066A5]">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    Akses Praktis & Mudah
                   </span>
                 </div>
               </Card>
@@ -514,7 +592,7 @@ export default function TraficarePage() {
               </h4>
               <p className="text-gray-600 leading-relaxed">
                 Konten disajikan dengan bahasa sederhana dan visual yang menarik
-                untuk memudahkan pemahaman siswa.
+                untuk memudahkan pemahaman individu.
               </p>
             </div>
 
@@ -594,7 +672,7 @@ export default function TraficarePage() {
             <div className="w-20 h-1 bg-gradient-to-r from-[#0066A5] to-emerald-600 rounded-full mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Isi biodata Anda untuk melanjutkan ke panduan Pertolongan Pertama
-              Pada Kecelakaan dan bergabung dengan ribuan siswa lainnya
+              Pada Kecelakaan dan bergabung dengan ribuan individu lainnya
             </p>
           </div>
 
@@ -605,7 +683,7 @@ export default function TraficarePage() {
                 Biodata Siswa
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Isi data berikut untuk melanjutkan ke panduan P3K.
+                Isi data berikut untuk melanjutkan ke panduan Pertolongan Pertama pada Kecelakaan.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">
@@ -636,11 +714,11 @@ export default function TraficarePage() {
                     htmlFor="nis"
                     className="text-sm font-semibold text-gray-700"
                   >
-                    NIS/NIM
+                    NIS
                   </Label>
                   <Input
                     id="nis"
-                    placeholder="Masukkan NIS/NIM"
+                    placeholder="Masukkan NIS"
                     value={biodata.nis}
                     onChange={(e) => handleBiodataChange("nis", e.target.value)}
                     required
@@ -690,7 +768,6 @@ export default function TraficarePage() {
                     </option>
                     <option value="Laki-laki">Laki-laki</option>
                     <option value="Perempuan">Perempuan</option>
-                    <option value="Lainnya">Lainnya</option>
                   </select>
                 </div>
                 <div>
@@ -1026,7 +1103,7 @@ export default function TraficarePage() {
               Traficare
             </h3>
             <p className="mt-3 text-gray-300">
-              Platform edukasi P3K untuk siswa SMA. Bangun kesiapsiagaan dengan
+              Platform edukasi Pertolongan Pertama pada Kecelakaan untuk remaja. Bangun kesiapsiagaan dengan
               pengetahuan yang tepat.
             </p>
           </div>
@@ -1065,7 +1142,7 @@ export default function TraficarePage() {
 
           <div className="text-center text-sm text-gray-400">
             <p>
-              © <span>{year}</span> Traficare • Dibuat dengan dedikasi untuk
+              © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Traficare • Dibuat dengan dedikasi untuk
               keselamatan bersama
             </p>
           </div>
