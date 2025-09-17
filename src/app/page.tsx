@@ -34,7 +34,8 @@ import {
   Book,
 } from "lucide-react";
 import Image from "next/image";
-import { supabase, toYouTubeEmbed, type GuideRow } from "@/lib/supabaseClient";
+import { supabase, type GuideRow } from "@/lib/supabaseClient";
+import { toGoogleDriveEmbed, toYouTubeEmbed } from "@/lib/utils";
 
 interface BiodataForm {
   nama: string;
@@ -208,7 +209,7 @@ export default function TraficarePage() {
       const { data, error } = await supabase
         .from("guides")
         .select(
-          "id, category, title, description, article_html, youtube_url, youtube_embed_url, published"
+          "id, category, title, description, pdf_url, youtube_url, youtube_embed_url, published"
         )
         .eq("published", true)
         .order("created_at", { ascending: true });
@@ -399,8 +400,8 @@ export default function TraficarePage() {
                 <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-2xl">
                   Pelajari teknik pertolongan pertama yang dapat menyelamatkan
                   nyawa dalam situasi darurat. Platform interaktif yang
-                  dirancang khusus untuk remaja dengan pendekatan
-                  modern dan mudah dipahami.
+                  dirancang khusus untuk remaja dengan pendekatan modern dan
+                  mudah dipahami.
                 </p>
               </div>
 
@@ -477,7 +478,9 @@ export default function TraficarePage() {
                     className="flex h-full transition-transform duration-700 ease-in-out"
                     style={{
                       width: `${teamSlides.length * 100}%`,
-                      transform: `translateX(-${teamIndex * (100 / teamSlides.length)}%)`,
+                      transform: `translateX(-${
+                        teamIndex * (100 / teamSlides.length)
+                      }%)`,
                     }}
                   >
                     {teamSlides.map((slide, i) => (
@@ -498,7 +501,10 @@ export default function TraficarePage() {
                             {slide.title}
                           </h3>
                           {slide.members?.map((m, idx) => (
-                            <p key={idx} className="duration-200 text-base group-hover:text-lg">
+                            <p
+                              key={idx}
+                              className="duration-200 text-base group-hover:text-lg"
+                            >
                               {m}
                             </p>
                           ))}
@@ -516,7 +522,9 @@ export default function TraficarePage() {
                       aria-label={`Slide ${i + 1}`}
                       onClick={() => setTeamIndex(i)}
                       className={`h-2.5 rounded-full transition-all duration-300 ${
-                        i === teamIndex ? "w-6 bg-white/60" : "w-2.5 bg-white/20 hover:bg-white/80"
+                        i === teamIndex
+                          ? "w-6 bg-white/60"
+                          : "w-2.5 bg-white/20 hover:bg-white/80"
                       }`}
                     />
                   ))}
@@ -565,8 +573,8 @@ export default function TraficarePage() {
                   </div>
                 </div>
                 <p className="text-gray-700 text-lg leading-relaxed">
-                  Memberikan akses mudah dan praktis kepada remaja
-                  untuk mempelajari teknik pertolongan pertama yang dapat
+                  Memberikan akses mudah dan praktis kepada remaja untuk
+                  mempelajari teknik pertolongan pertama yang dapat
                   menyelamatkan nyawa. Kami percaya bahwa setiap individu berhak
                   mendapatkan pengetahuan yang dapat membuat perbedaan dalam
                   situasi darurat.
@@ -683,7 +691,8 @@ export default function TraficarePage() {
                 Biodata Siswa
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Isi data berikut untuk melanjutkan ke panduan Pertolongan Pertama pada Kecelakaan.
+                Isi data berikut untuk melanjutkan ke panduan Pertolongan
+                Pertama pada Kecelakaan.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">
@@ -1049,17 +1058,41 @@ export default function TraficarePage() {
                         </h3>
 
                         {(() => {
-                          const html = guides.find(
+                          const g = guides.find(
                             (x) => x.category === selectedGuide
-                          )?.article_html;
-                          return html ? (
-                            <div
-                              className="rich-content prose prose-lg max-w-none text-stone-700 leading-relaxed"
-                              dangerouslySetInnerHTML={{ __html: html }}
-                            />
+                          );
+                          // Prefer explicit pdf_url if it's already an <iframe> embed
+                          // Otherwise, try to parse a Google Drive link inside pdf_url as a fallback
+                          const tryExtractDriveUrl = (url?: string | null) => {
+                            if (!url) return null;
+                            try {
+                              // Very conservative: look for common drive patterns in plain text
+                              const m = url.match(
+                                /https?:\/\/(?:drive\.)?google\.com\S+/
+                              );
+
+                              return m ? m[0] : null;
+                            } catch {
+                              return null;
+                            }
+                          };
+                          const driveSource = tryExtractDriveUrl(g?.pdf_url);
+                          const embed = toGoogleDriveEmbed(
+                            driveSource || undefined
+                          );
+                          return embed ? (
+                            <div className="rounded-xl overflow-hidden shadow-2xl bg-white">
+                              <iframe
+                                src={embed}
+                                title={g?.title || "Dokumen"}
+                                className="w-full"
+                                style={{ height: "75vh" }}
+                                allow="fullscreen"
+                              />
+                            </div>
                           ) : (
                             <p className="text-stone-700 leading-relaxed text-lg">
-                              Artikel belum tersedia.
+                              Dokumen belum tersedia.
                             </p>
                           );
                         })()}
@@ -1103,8 +1136,8 @@ export default function TraficarePage() {
               Traficare
             </h3>
             <p className="mt-3 text-gray-300">
-              Platform edukasi Pertolongan Pertama pada Kecelakaan untuk remaja. Bangun kesiapsiagaan dengan
-              pengetahuan yang tepat.
+              Platform edukasi Pertolongan Pertama pada Kecelakaan untuk remaja.
+              Bangun kesiapsiagaan dengan pengetahuan yang tepat.
             </p>
           </div>
 
@@ -1142,8 +1175,8 @@ export default function TraficarePage() {
 
           <div className="text-center text-sm text-gray-400">
             <p>
-              © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Traficare • Dibuat dengan dedikasi untuk
-              keselamatan bersama
+              © <span suppressHydrationWarning>{new Date().getFullYear()}</span>{" "}
+              Traficare • Dibuat dengan dedikasi untuk keselamatan bersama
             </p>
           </div>
         </div>

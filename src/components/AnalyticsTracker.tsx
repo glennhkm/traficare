@@ -66,8 +66,6 @@ export default function AnalyticsTracker() {
           },
           body: JSON.stringify(analyticsData),
         });
-
-        console.log("📊 Analytics tracked:", pathname);
       } catch (error) {
         console.error("Analytics tracking failed:", error);
       }
