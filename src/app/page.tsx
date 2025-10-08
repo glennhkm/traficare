@@ -876,6 +876,18 @@ export default function TraficarePage() {
                 ingin Anda pelajari. Setiap panduan dilengkapi dengan video
                 demonstrasi dan artikel lengkap yang mudah dipahami.
               </p>
+              <div className="flex justify-center my-12">
+                <div className="w-full max-w-3xl">
+                  <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                    <iframe
+                      src="https://www.youtube.com/embed/vq3s1DIF6PQ"
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
